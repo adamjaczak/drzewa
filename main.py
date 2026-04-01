@@ -40,6 +40,24 @@ class Node:
                 write_preorder(current_node.right)
             write_preorder(self)
 
+    def find_minimum(self):
+        print(self.value, end=" -> ")
+
+        if self.left is None:
+            print("X")
+            return self.value
+
+        return self.left.find_minimum()
+
+    def find_maximum(self):
+        print(self.value, end=" -> ")
+
+        if self.right is None:
+            print("X")
+            return self.value
+
+        return self.right.find_maximum()
+
 
 def load_tree_from_file(filepath):
 
@@ -127,7 +145,10 @@ while user_choice != 4:
         print(f"Wysokość drzewa: {root.height}")
         files = list(folder.glob("*.txt"))
         root.save_tree_to_file(f"trees/drzewo{len(files)+1}.txt")
-
+        minimum = root.find_minimum()
+        print(f"Wartość minimalna to: {minimum}")
+        maximum = root.find_maximum()
+        print(f"Wartość maksymalna to: {maximum}")
     elif user_choice == 3:
-        for tree in trees:
-            tree.pre_order_search()
+        for index, tree in enumerate(trees):
+            print(f"{index}. {(tree.pre_order_search())}\n")
