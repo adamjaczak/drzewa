@@ -14,6 +14,7 @@ class Node:
         self.value = value
         self.left = None
         self.right = None
+        self.height = 1
 
     def in_order_search(self):
         if self.left is not None:
@@ -39,21 +40,21 @@ class Node:
                 write_preorder(current_node.right)
             write_preorder(self)
 
-    def load_tree_from_file(self, filepath):
 
-        if not os.path.exists(filepath):
-            print("Błąd. Plik nie istnieje")
-            return None
-        with open(filepath, 'r') as file:
-            for line in file:
-                value = int(line.strip())
-                if self is None:
-                    self.value = value
-                else:
-                    insert(self, value)
+def load_tree_from_file(filepath):
 
-        print("Drzewo zostało zbudowane")
-        return root
+    if not os.path.exists(filepath):
+        print("Błąd. Plik nie istnieje")
+        return None
+
+    new_root = None
+    with open(filepath, 'r') as file:
+        for line in file:
+            value = int(line.strip())
+            new_root = insert(new_root, value)
+
+    print("Drzewo zostało zbudowane")
+    return new_root
 
 
 def insert(node, value):
@@ -70,7 +71,9 @@ def insert(node, value):
             node.right = Node(value)
         else:
             insert(node.right, value)
-
+    left_height = node.left.height if node.left is not None else 0
+    right_height = node.right.height if node.right is not None else 0
+    node.height = 1 + max(left_height, right_height)
     return node
 
 
@@ -92,16 +95,15 @@ def add_values(values: list, basic_root=None):
     return basic_root
 
 
+folder = Path("trees/")
+if folder.exists() and folder.is_dir():
+    for file in folder.glob("*.txt"):
+        if file.is_file():
+            tree = load_tree_from_file(str(file))
+            trees.append(tree)
 while user_choice != 4:
-    folder = Path("trees/")
-    if folder.exists() and folder.is_dir():
-        for file in folder.glob("*.txt"):
-            if file.is_file():
-                tree = Node(None)
-                tree.load_tree_from_file(str(file))
-                trees.append(tree)
 
-    print("\n1. Tworzenie drzewa metodą połowienia binarnego\n2. Tworzenie drzewa metodą dodawania z tablicy\n3.Wypisz drzewa z pliku\n4. Wyjście")
+    print("\n1. Tworzenie drzewa metodą połowienia binarnego\n2. Tworzenie drzewa metodą dodawania z tablicy\n3. Wypisz drzewa z pliku\n4. Wyjście")
 
     flag = False
 
@@ -118,11 +120,14 @@ while user_choice != 4:
         values.sort()
         print(f"Posortowane wartości wejściowe: {values}")
         root = add_values(values)
-        print("In order\n")
+        print("In order:")
         root.in_order_search()
-        print("\nPre order\n")
+        print("\nPre order:")
         root.pre_order_search()
-        root.save_tree_to_file("trees/drzewo1.txt")
+        print(f"Wysokość drzewa: {root.height}")
+        files = list(folder.glob("*.txt"))
+        root.save_tree_to_file(f"trees/drzewo{len(files)+1}.txt")
+
     elif user_choice == 3:
         for tree in trees:
             tree.pre_order_search()
