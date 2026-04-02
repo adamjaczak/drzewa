@@ -68,6 +68,16 @@ class Node:
 
         return None
 
+    def remove_tree(self):
+        if self.left is not None:
+            self.left.remove_tree()
+            self.left = None
+        if self.right is not None:
+            self.right.remove_tree()
+            self.right = None
+
+        self.value = None
+
 
 def get_minimum_from_node(node: Node):
     current = node
@@ -195,11 +205,13 @@ while user_choice != 4:
             continue
         user_tree_choice = 0
         while user_tree_choice != len(trees) + 1:
+            print(trees)
             print("Wybierz odpowiednie drzewo")
             for index, tree in enumerate(trees):
-                print(f"{index+1}.", end=" ")
-                tree.pre_order_search()
-                print("")
+                if tree.value is not None:
+                    print(f"{index+1}.", end=" ")
+                    tree.pre_order_search()
+                    print("")
             print(f"{len(trees)+1}. Wyjście")
 
             flag = False
@@ -217,15 +229,16 @@ while user_choice != 4:
                 break
             else:
                 chosen_tree = trees[user_tree_choice - 1]
+                chosen_tree_index = trees.index(chosen_tree)
 
                 user_menu_choice = 0
                 while user_menu_choice != 5:
                     print("1. Znajdź minimum\n2. Znajdź maksimum\n3. Usuń wartości\n"
-                          "4. Wypisz wszystkie elementy (in-order) (pre-order)\n5. Wyjście")
+                          "4. Wypisz wszystkie elementy (in-order) (pre-order)\n5. Usuń całe drzewo\n6. Wróć")
                     try:
                         user_menu_choice = int(input())
-                        if not 1 <= user_menu_choice <= 5:
-                            raise ValueError("Tylko wartości od 1-5")
+                        if not 1 <= user_menu_choice <= 6:
+                            raise ValueError("Tylko wartości od 1-6")
                     except ValueError:
                         print("Wprowadź poprawną wartość")
 
@@ -251,4 +264,10 @@ while user_choice != 4:
                         chosen_tree.pre_order_search()
                         print("In - order")
                         chosen_tree.in_order_search()
+                    elif user_menu_choice == 5:
+                        chosen_tree.remove_tree()
+                        file = Path(f"trees/drzewo{chosen_tree_index + 1}.txt")
+                        if file.exists() and file.is_file():
+                            file.unlink()
+                        break
 
