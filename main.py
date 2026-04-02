@@ -58,6 +58,44 @@ class Node:
 
         return self.right.find_maximum()
 
+    def find_value(self, target_value):
+        if target_value == self.value:
+            return self
+        elif target_value < self.value and self.left is not None:
+            return self.left.find_value(target_value)
+        elif target_value > self.value and self.right is not None:
+            return self.right.find_value(target_value)
+
+        return None
+
+
+def get_minimum_from_node(node: Node):
+    current = node
+    while current.left is not None:
+        current = current.left
+    return current
+
+
+def remove_element(n: Node, value):
+    if n is None:
+        return n
+
+    if value < n.value:
+        n.left = remove_element(n.left, value)
+    elif value > n.value:
+        n.right = remove_element(n.right, value)
+    else:
+        if n.left is None:
+            return n.right
+        elif n.right is None:
+            return n.left
+
+        potential_next_value = get_minimum_from_node(n.right)
+        n.value = potential_next_value.value
+        n.right = remove_element(n.right, potential_next_value.value)
+
+    return n
+
 
 def load_tree_from_file(filepath):
 
@@ -121,7 +159,7 @@ if folder.exists() and folder.is_dir():
             trees.append(tree)
 while user_choice != 4:
 
-    print("\n1. Tworzenie drzewa metodą połowienia binarnego\n2. Tworzenie drzewa metodą dodawania z tablicy\n3. Wypisz drzewa z pliku\n4. Wyjście")
+    print("\n1. Tworzenie drzewa metodą połowienia binarnego\n2. Tworzenie drzewa metodą dodawania z tablicy\n3. Operacje na drzewach z plików\n4. Wyjście")
 
     flag = False
 
@@ -149,6 +187,68 @@ while user_choice != 4:
         print(f"Wartość minimalna to: {minimum}")
         maximum = root.find_maximum()
         print(f"Wartość maksymalna to: {maximum}")
+        remove_element(root, 9)
+        root.pre_order_search()
     elif user_choice == 3:
-        for index, tree in enumerate(trees):
-            print(f"{index}. {(tree.pre_order_search())}\n")
+        if len(trees) == 0:
+            print("Brak drzew w plikach. Dodaj napierw drzewa")
+            continue
+        user_tree_choice = 0
+        while user_tree_choice != len(trees) + 1:
+            print("Wybierz odpowiednie drzewo")
+            for index, tree in enumerate(trees):
+                print(f"{index+1}.", end=" ")
+                tree.pre_order_search()
+                print("")
+            print(f"{len(trees)+1}. Wyjście")
+
+            flag = False
+            while not flag:
+                try:
+                    user_tree_choice = int(input())
+                    if not 1 <= user_tree_choice <= len(trees) + 1:
+                        print("Wybierz drzewo oznaczone cyfrą!")
+                    else:
+                        flag = True
+                except ValueError:
+                    print("Niepoprawna wartość. Spróbuj ponownie")
+
+            if user_tree_choice == len(trees) + 1:
+                break
+            else:
+                chosen_tree = trees[user_tree_choice - 1]
+
+                user_menu_choice = 0
+                while user_menu_choice != 5:
+                    print("1. Znajdź minimum\n2. Znajdź maksimum\n3. Usuń wartości\n"
+                          "4. Wypisz wszystkie elementy (in-order) (pre-order)\n5. Wyjście")
+                    try:
+                        user_menu_choice = int(input())
+                        if not 1 <= user_menu_choice <= 5:
+                            raise ValueError("Tylko wartości od 1-5")
+                    except ValueError:
+                        print("Wprowadź poprawną wartość")
+
+                    if user_menu_choice == 1:
+                        chosen_tree.find_minimum()
+                    elif user_menu_choice == 2:
+                        chosen_tree.find_maximum()
+                    elif user_menu_choice == 3:
+                        print("Ile elementów chcesz usunąć?")
+                        n = int(input())
+                        elements_to_remove = []
+                        print("Podaj wartości do usunięcia")
+                        for i in range(n):
+                            elements_to_remove.append(int(input()))
+
+                        for element in elements_to_remove:
+                            remove_element(chosen_tree, element)
+
+                        print("Pre-order po usunięciu")
+                        chosen_tree.pre_order_search()
+                    elif user_menu_choice == 4:
+                        print("Pre - order")
+                        chosen_tree.pre_order_search()
+                        print("In - order")
+                        chosen_tree.in_order_search()
+
