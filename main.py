@@ -1,7 +1,7 @@
 import os.path
 from pathlib import Path
 from trees_logic import BST
-
+from tests import generate_random_data
 
 tree_balanced = BST()
 tree_degenerate = BST()
@@ -24,11 +24,22 @@ while True:
         continue
 
     if user_choice == 1:
-        user_input = input("Podaj 10 liczb oddzielonych spacją: ")
-        raw_values = [int(x) for x in user_input.split()]
-        values = list(set(raw_values))[:10]
-        values.sort()
-        print(f"Posortowane dane wejściowe: {values}")
+        try:
+            choice = int(input("Jakie dane chcesz? (1 - z klawiatury, 2 - z generatora)"))
+        except ValueError:
+            print("Niepoprawna wartość wejściowa")
+        if choice == 1:
+            user_input = input("Podaj 10 liczb oddzielonych spacją: ")
+            raw_values = [int(x) for x in user_input.split()]
+            values = list(set(raw_values))[:10]
+            values.sort()
+            print(f"Posortowane dane wejściowe: {values}")
+        elif choice == 2:
+            values = generate_random_data(100, 1, 1000)
+            values.sort()
+        else:
+            print("Niepoprawna wartość wejściowa")
+            continue
 
         tree_balanced.build_balanced(values)
         tree_degenerate.build_degenerate(values)
@@ -65,11 +76,20 @@ while True:
         print("Drzewo zdegenerowane: ")
         tree_degenerate.find_maximum()
     elif user_choice == 5:
-        if not tree_degenerate.root:
+        if not tree_degenerate.root and not tree_balanced.root:
             print("Brak danych")
             continue
         target = int(input("Z którego drzewa usunąć? (1 - Zbalansowane, 2 - Zdegenerowane)"))
-        selected = tree_balanced if target == 1 else tree_degenerate
+        if target == 1:
+            if not tree_balanced.root:
+                print("Drzewo zbalansowane jest puste")
+                continue
+            selected = tree_balanced
+        elif target == 2:
+            if not tree_degenerate.root:
+                print("Drzewo zdegenerowane jest puste")
+                continue
+            selected = tree_degenerate
 
         try:
             n = int(input("Ile węzłów chcesz usunąć?: "))
@@ -82,17 +102,23 @@ while True:
     elif user_choice == 6:
         continue
     elif user_choice == 7:
-        if not tree_balanced.root:
+        if not tree_balanced.root and not tree_degenerate.root:
             print("Brak danych")
             continue
         target = int(input("Które drzewo usunąć (1 - Zbalansowane, 2 - Zdegenerowane)"))
         if target == 1:
-            tree_balanced.remove_tree()
+            if tree_balanced.root:
+                tree_balanced.remove_tree()
+            else:
+                print("Drzewo zbalansowane jest puste")
         elif target == 2:
-            tree_degenerate.remove_tree()
+            if tree_degenerate.root:
+                tree_degenerate.remove_tree()
+            else:
+                print("Drzewo zdegenerowane jest puste")
         else:
             print("Niepoprawny wybór")
-    elif user_choice == 7:
+    elif user_choice == 8:
         print("Koniec programu")
         break
     else:

@@ -12,7 +12,7 @@ class BST:
 
     def insert(self, value):
         if self.root is None:
-            self.root = Nodeo(value)
+            self.root = Node(value)
             return
         current = self.root
         while True:
@@ -31,7 +31,7 @@ class BST:
 
     def build_balanced(self, values):
         def build(arr):
-            if not (arr):
+            if not arr:
                 return None
             mid = len(arr) // 2
             node = Node(arr[mid])
@@ -77,7 +77,7 @@ class BST:
             path.append(str(current.value))
             current = current.right
         path.append(str(current.value))
-        print("Ścieżka znajdowania minimum: ", " -> ".join(path))
+        print("Ścieżka znajdowania maksimum: ", " -> ".join(path))
         return current.value
 
     def remove_element(self, value):
