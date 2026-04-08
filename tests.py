@@ -19,4 +19,8 @@ def generate_data_for_tests():
 
     return tests_data
 
+# 1 - generating tree
+# 2 - searching max val in tree
+# 3 - In order search
+# 4 - balancing DSW
 
