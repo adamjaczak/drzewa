@@ -2,6 +2,8 @@ import os.path
 from pathlib import Path
 from trees_logic import BST
 from tests import generate_random_data
+import sys
+sys.setrecursionlimit(15000)
 
 tree_balanced = BST()
 tree_degenerate = BST()

@@ -1,4 +1,7 @@
 import math
+import sys
+
+sys.setrecursionlimit(15000)
 
 
 class Node:
