@@ -19,7 +19,9 @@ def generate_plot(n_values, degenerate_times, balanced_times, title):
     plt.figure(figsize=(10, 6))
 
     plt.plot(n_values, degenerate_times, label="Drzewo zdegenerowane", color='red', marker='o', linewidth=2)
-    plt.plot(n_values, balanced_times, label="Drzewo zbalansowane", color='green', marker='s', linewidth=2)
+
+    if balanced_times is not None:
+        plt.plot(n_values, balanced_times, label="Drzewo zbalansowane", color='green', marker='s', linewidth=2)
 
     plt.title(title, fontsize=14)
     plt.xlabel('Liczba elementów [n]', fontsize=11)
@@ -38,14 +40,16 @@ def generate_tests():
     results = {
         'creation': {'deg': [], 'bal': []},
         'max': {'deg': [], 'bal': []},
-        'in_order': {'deg': [], 'bal': []}
+        'in_order': {'deg': [], 'bal': []},
+        'dsw': {'deg': []}
     }
 
     for n in n_values:
         times = {
             'create_deg': [], 'create_bal': [],
             'max_deg': [], 'max_bal': [],
-            'in_order_deg': [], 'in_order_bal': []
+            'in_order_deg': [], 'in_order_bal': [],
+            'dsw_deg': []
         }
 
         print(f"Rozpoczynam testy dla n = {n}")
@@ -75,6 +79,11 @@ def generate_tests():
                 stop = time.perf_counter()
                 times['in_order_deg'].append(stop-start)
 
+                start = time.perf_counter()
+                tree_deg.balance_dsw()
+                stop = time.perf_counter()
+                times['dsw_deg'].append(stop - start)
+
             # Testy dla drzewa zbalansowanego
 
             tree_bal = BST()
@@ -102,10 +111,11 @@ def generate_tests():
 
         results['in_order']['deg'].append(statistics.mean(times['in_order_deg']))
         results['in_order']['bal'].append(statistics.mean(times['in_order_bal']))
+        results['dsw']['deg'].append(statistics.mean(times['dsw_deg']))
 
-    generate_plot(n_values, results['creation']['deg'], results['creation']['bal'],"Czas tworzenia drezw w zależności od (n)")
-    generate_plot(n_values, results['max']['deg'], results['max']['bal'], "Czas szukania wartości MAX w zależności od (n)")
-    generate_plot(n_values, results['in_order']['deg'], results['in_order']['bal'], "Czas wyszukiwania in-order w zależności od (n)")
+    generate_plot(n_values, results['creation']['deg'], results['creation']['bal'],"Czas tworzenia drzew w zależności od (n)")
+    #generate_plot(n_values, results['max']['deg'], results['max']['bal'], "Czas szukania wartości MAX w zależności od (n)")
+    #generate_plot(n_values, results['in_order']['deg'], results['in_order']['bal'], "Czas wyszukiwania in-order w zależności od (n)")
+    generate_plot(n_values, results['dsw']['deg'], None, "Czas równoważenia DSW w zależności od liczby elementów (n)")
 
-
-#generate_tests()
+generate_tests()
