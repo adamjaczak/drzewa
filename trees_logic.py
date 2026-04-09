@@ -162,20 +162,20 @@ class BST:
                 rest = temp
                 tail.right = temp
 
-            def compress(root, count):
-                scanner = root
-                for _ in range(count):
-                    child = scanner.right
-                    scanner.right = child.right
-                    scanner = scanner.right
-                    child.right = scanner.left
-                    scanner.left = child
-            m = 2 ** int(math.log2(node_count + 1)) - 1
-            compress(temp_root, node_count - m)
+        def compress(root, count):
+            scanner = root
+            for _ in range(count):
+                child = scanner.right
+                scanner.right = child.right
+                scanner = scanner.right
+                child.right = scanner.left
+                scanner.left = child
+        m = 2 ** int(math.log2(node_count + 1)) - 1
+        compress(temp_root, node_count - m)
 
-            while m > 1:
-                m //= 2
-                compress(temp_root, m)
+        while m > 1:
+            m //= 2
+            compress(temp_root, m)
 
-            self.root = temp_root.right
-            print("Drzewo zostało zrównoważone przez DSW.")
+        self.root = temp_root.right
+        print("Drzewo zostało zrównoważone przez DSW.")
