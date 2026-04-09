@@ -102,7 +102,21 @@ while True:
         except ValueError:
             print("Błąd. Podano niepoprawny format danych")
     elif user_choice == 6:
-        continue
+        if not tree_degenerate.root:
+            print("Brak danych")
+            continue
+
+        print("Przed DSW: (zdegenerowane):")
+        print(f"Wysokość: {tree_degenerate.get_height()}")
+        print("Pre-order: ", end="")
+        tree_degenerate.pre_order_search()
+
+        tree_degenerate.balance_dsw()
+
+        print("Po DSW:")
+        print(f"Wysokość: {tree_degenerate.get_height()}")
+        print("Pre-order: ", end="")
+        tree_degenerate.pre_order_search()
     elif user_choice == 7:
         if not tree_balanced.root and not tree_degenerate.root:
             print("Brak danych")
