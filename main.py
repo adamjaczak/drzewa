@@ -37,7 +37,7 @@ while True:
             values.sort()
             print(f"Posortowane dane wejściowe: {values}")
         elif choice == 2:
-            values = generate_random_data(100, 1, 1000)
+            values = generate_random_data(20, 1, 1000)
             values.sort()
         else:
             print("Niepoprawna wartość wejściowa")

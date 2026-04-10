@@ -118,4 +118,4 @@ def generate_tests():
     #generate_plot(n_values, results['in_order']['deg'], results['in_order']['bal'], "Czas wyszukiwania in-order w zależności od (n)")
     generate_plot(n_values, results['dsw']['deg'], None, "Czas równoważenia DSW w zależności od liczby elementów (n)")
 
-generate_tests()
+#generate_tests()
